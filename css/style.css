@@ -1,0 +1,63 @@
+:root{
+        --BG_COLOR: #222;
+        --MAIN_COLOR: rgb(145, 103, 173);
+        --SECONDARY_COLOR:rgb(240, 179, 155);
+}
+
+body{
+    background-color: var(--BG_COLOR);
+    color: var(--MAIN_COLOR);
+}
+
+.minesweeper-board table{
+    margin:auto;
+    padding-top: 15vh;
+}
+
+table .cell{
+    display: inline-block;
+    font-size: 30px;
+    margin: 5px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 10px;
+    opacity: 50%;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    background-color: var(--MAIN_COLOR);
+    color: var(--BG_COLOR);
+}
+.cell:hover{
+    opacity: 75%;
+}
+.cell.marked{
+    background-color: var(--SECONDARY_COLOR);
+    opacity: 75%;
+}
+
+.minesweeper-modal{
+    margin:auto;
+    text-align: center;
+}
+
+.cell.shown{
+    background-color: white; 
+    opacity: 80%;
+}
+
+
+.timer{
+    width: 50vw;
+    border-radius: 15px;
+    margin: auto;
+    text-align: center;
+    font-size: 25px;
+    background-color: var(--SECONDARY_COLOR);
+    opacity: 45%;
+    color: var(--BG_COLOR);
+}
+
+.timer span{
+    font-size:50px;
+    font-weight: bolder;
+}
