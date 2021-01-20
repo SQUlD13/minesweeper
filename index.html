@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Minesweeper</title>
+</head>
+
+
+<body onload="init()">
+    <div class="minesweeper-board">
+        <!-- <table> ///Data structure
+            <tbody>
+                <tr>
+                    <td><button onclick="cellClicked(event,element,i,j)" class="cell marked" data-i="0" data-j="0"><span>X</span></button></td>
+                    <td class="cell" data-i="1" data-j="0"><span>X</span></td>
+                    <td class="cell" data-i="2" data-j="0"><span>0</span></td>
+                </tr>
+                <tr>
+                    <td class="cell" data-i="0" data-j="1"><span>X</span></td>
+                    <td class="cell" data-i="1" data-j="1"><span>X</span></td>
+                    <td class="cell" data-i="2" data-j="1"><span>0</span></td>
+                </tr>
+                <tr>
+                    <td class="cell" data-i="0" data-j="2"><span>X</span></td>
+                    <td class="cell" data-i="1" data-j="2"><span>X</span></td>
+                    <td class="cell" data-i="2" data-j="2"><span>0</span></td>
+                </tr>
+            </tbody>
+        </table> -->
+    </div>
+    <div class="minesweeper-timer">
+        <h1><span>X:XX:XXX</span><br> Seconds Passed</h1>
+    </div>
+    <!-- <div hidden class="minesweeper-modal">
+        <h1 onclick="init()">Restart game? </h1><br>
+        <h2>Highschore: <span>X<br> seconds</span>
+    </div> -->
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/minesweeper.js"></script>
+</body>
+
+</html>

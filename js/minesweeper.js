@@ -5,6 +5,7 @@ const MINE = '💣'
 const EMPTY = ' '
 const MARKED = '🚩'
 const EXPLOSION = '💥'
+const LIFE = '❤'
 //const levels = [{name:'Easy',size:4,mines:2,selected:true}, {name:'Medium',size:8,mines:12,selected:false},{name:'Expert',size:12,mines:30,selected:false}];
 
 
