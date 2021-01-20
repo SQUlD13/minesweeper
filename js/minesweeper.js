@@ -16,14 +16,13 @@ var gGameIntervalIdx;
 
 
 function init() {
-    gGame.isOn = true
     console.log('--Initializing Minesweeper--')
     gBoard = initializeBoard(gLevel.SIZE);
     console.table(gBoard);
     printMatrix(gBoard, `.minesweeper-board`)
     placeMines(gBoard, gLevel.MINES);
-    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('minesweeper') }, 1000)
     renderTimer('minesweeper')//creates timer innerHTML
+    console.log(gGame.isOn)
 }
 
 
@@ -70,56 +69,68 @@ function cellClicked(elCell, clickEvent) {
     console.log('i is', i, 'j is', j)
     let cell = gBoard[i][j];
     //console.log('on click cell is', cell, 'on board', gBoard);
-    if (gGame.isOn) {
-        if (clickEvent.button === 0) {
-            if (!cell.isMarked) {
-                if (!cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, renderr a colorful number inside of it
-                    console.log('Left mouse button clicked on element', elCell, 'at location', i + ' ' + j)
-                    renderCell({ i: i, j: j }, `<span style="color:${getRandomRGB()}; margin:auto; "> ${cell.minesAroundCount}</span>`)
-                    gGame.shownCount++;//MODEL
-                    console.log('there are ', gGame.shownCount, 'marked cells out of', ((gLevel.SIZE ** 2) - gLevel.MINES), 'cells to mark.\n there are', gLevel.MINES, 'mines on the board');
-                    elCell.classList.add(`marked`);//DOM
-                    elCell.classList.add('shown')
-                    //console.table(gBoard)
-                    if (gGame.markedCount === gLevel.MINES && (gGame.shownCount === ((gLevel.SIZE ** 2) - gLevel.MINES))) {//WIN CONDITION CHECK
-                        console.log('--GAME WON--');
-                        gGame.isOn = false;
-                        clearInterval(gGameIntervalIdx);
-                        gGameIntervalIdx = null;
-                        //TO DO : ADD WIN OR LOSS SCREEN
-                    }
-                } else {///////////////////////////////////////////////////////////////////////////////////////////////////GAME LOST
-                    gGame.isOn = false;
-                    clearInterval(gGameIntervalIdx);
-                    gGameIntervalIdx = null;
-                    //TO DO : ADD WIN OR LOSS SCREEN
-                    renderCell({ i: i, j: j }, EXPLOSION)
-                    console.log('--GAME LOST--\m--CLICKED ON BOMB--')
-                    revealMines(i, j);
-                }
-            }
-        }
-        if (clickEvent.button === 2) {
-            console.log('right mouse button clicked on element', elCell, 'at location', i + ' ' + j)
-            if (!cell.isMarked) {
-                gGame.markedCount++;
-                cell.isMarked = true;//toggle cell marking
-                elCell.classList.add(`marked`);
-                renderCell({ i: i, j: j }, MARKED);
-                //renderModal('minesweeper', i, j);
-                console.log('--display cell information--')
-            } else {
-                gGame.markedCount--;
-                cell.isMarked = false;//toggle cell marking
-                elCell.classList.remove(`marked`);
-                renderCell({ i: i, j: j }, EMPTY);
-                //renderModal('minesweeper', i, j);
-                console.log('--unkmark cell information--')
+    if (!gGame.isOn) {
+        startGame();
+    }
+    if (clickEvent.button === 0) {
+        if (!cell.isMarked) {
+            if (!cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, renderr a colorful number inside of it
+                console.log('Left mouse button clicked on element', elCell, 'at location', i + ' ' + j)
+                renderCell({ i: i, j: j }, `<span style="color:${getRandomRGB()}; margin:auto; "> ${cell.minesAroundCount}</span>`)
+                gGame.shownCount++;//MODEL
+                console.log('there are ', gGame.shownCount, 'marked cells out of', ((gLevel.SIZE ** 2) - gLevel.MINES), 'cells to mark.\n there are', gLevel.MINES, 'mines on the board');
+                elCell.classList.add(`marked`);//DOM
+                elCell.classList.add('shown')
+                //console.table(gBoard)
+                checkGameOver();
+            } else {///////////////////////////////////////////////////////////////////////////////////////////////////GAME LOST
+                gGame.isOn = false;
+                clearInterval(gGameIntervalIdx);
+                gGameIntervalIdx = null;
+                //TO DO : ADD WIN OR LOSS SCREEN
+                renderCell({ i: i, j: j }, EXPLOSION)
+                console.log('--GAME LOST--\m--CLICKED ON BOMB--')
+                revealMines(i, j);
             }
         }
     }
+    if (clickEvent.button === 2) {
+        console.log('right mouse button clicked on element', elCell, 'at location', i + ' ' + j)
+        if (!cell.isMarked) {
+            gGame.markedCount++;
+            cell.isMarked = true;//toggle cell marking
+            elCell.classList.add(`marked`);
+            renderCell({ i: i, j: j }, MARKED);
+            //renderModal('minesweeper', i, j);
+            console.log('--display cell information--')
+            checkGameOver();
+        } else {
+            gGame.markedCount--;
+            cell.isMarked = false;//toggle cell marking
+            elCell.classList.remove(`marked`);
+            renderCell({ i: i, j: j }, EMPTY);
+            //renderModal('minesweeper', i, j);
+            console.log('--unkmark cell information--')
+        }
+    }
+
 }
 
+function startGame() {
+    gGame.isOn = true;
+    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('minesweeper') }, 1000)
+    renderTimer('minesweeper');
+}
+
+function checkGameOver() {
+    if (gGame.markedCount === gLevel.MINES && (gGame.shownCount === ((gLevel.SIZE ** 2) - gLevel.MINES))) {//WIN CONDITION CHECK
+        console.log('--GAME WON--');
+        gGame.isOn = false;
+        clearInterval(gGameIntervalIdx);
+        gGameIntervalIdx = null;
+        //TO DO : ADD WIN OR LOSS SCREEN
+    }
+}
 
 function revealMines(i, j) {
     for (let iIter = 0; iIter < gBoard.length; iIter++) {
@@ -166,10 +177,11 @@ function renderTimer(selector) {
 function renderDifficulty(selector) {
     //elCell == document.getElementById(`${i}-${j}`)
     if (selector === 'minesweeper') {
+        let strHtml = `<div class=".${selector}-difficulty" >  </div>`;
+        let elModal = document.querySelector(`.${selector}-difficulty`)
+        elModal.innerHTML = strHtml;
     }
-    let strHtml = `<div class=".${selector}-difficulty" >  </div>`;
-    let elModal = document.querySelector(`.${selector}-difficulty`)
-    elModal.innerHTML = strHtml;
+
 }
 
 
