@@ -22,10 +22,18 @@ function init() {
     console.table(gBoard);
     printMatrix(gBoard, `.minesweeper-board`)
     placeMines(gBoard, gLevel.MINES);
-    renderTimer('minesweeper')//creates timer innerHTML
+    renderTimer('minesweeper')
     console.log(gGame.isOn)
 }
 
+function startGame() {
+
+    gGame.shownCount = 0;
+    gGame.secsPassed = 0;
+    gGame.isOn = true;
+    renderTimer('minesweeper')//creates timer innerHTML
+    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('minesweeper') }, 1000)
+}
 
 function placeMines(board, amount) {
     for (let i = 0; i < amount; i++) {
@@ -71,11 +79,11 @@ function cellClicked(elCell, clickEvent) {
     let cell = gBoard[i][j];
     //console.log('on click cell is', cell, 'on board', gBoard);
     if (!gGame.isOn) {
-        startGame();
+        ini
     }
     if (clickEvent.button === 0) {
         if (!cell.isMarked) {
-            if (!cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, renderr a colorful number inside of it
+            if (!cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, render a colorful number inside of it
                 console.log('Left mouse button clicked on element', elCell, 'at location', i + ' ' + j)
                 renderCell({ i: i, j: j }, `<span style="color:${getRandomRGB()}; margin:auto; "> ${cell.minesAroundCount}</span>`)
                 gGame.shownCount++;//MODEL
@@ -89,13 +97,13 @@ function cellClicked(elCell, clickEvent) {
                 clearInterval(gGameIntervalIdx);
                 gGameIntervalIdx = null;
                 //TO DO : ADD WIN OR LOSS SCREEN
-                renderCell({ i: i, j: j }, EXPLOSION)
                 console.log('--GAME LOST--\m--CLICKED ON BOMB--')
                 revealMines(i, j);
+                renderCell({ i: i, j: j }, EXPLOSION)
             }
         }
     }
-    if (clickEvent.button === 2) {
+    else if (clickEvent.button === 2) {
         console.log('right mouse button clicked on element', elCell, 'at location', i + ' ' + j)
         if (!cell.isMarked) {
             gGame.markedCount++;
@@ -115,28 +123,25 @@ function cellClicked(elCell, clickEvent) {
         }
     }
 
+
+
+
 }
 
-function startGame() {
-    gGame.isOn = true;
-    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('minesweeper') }, 1000)
-    renderTimer('minesweeper');
-}
 
 function checkGameOver() {
-    if (gGame.markedCount === gLevel.MINES && (gGame.shownCount === ((gLevel.SIZE ** 2) - gLevel.MINES))) {//WIN CONDITION CHECK
-        console.log('--GAME WON--');
+    if ((gGame.markedCount === gLevel.MINES && (gGame.shownCount === ((gLevel.SIZE ** 2) - gLevel.MINES)))) {//WIN CONDITION CHECK
         gGame.isOn = false;
         clearInterval(gGameIntervalIdx);
         gGameIntervalIdx = null;
-        //TO DO : ADD WIN OR LOSS SCREEN
     }
 }
+
 
 function revealMines(i, j) {
     for (let iIter = 0; iIter < gBoard.length; iIter++) {
         for (let jIter = 0; jIter < gBoard.length; jIter++) {
-            if (gBoard[iIter][jIter].isMine === true && i !== iIter && j !== jIter) {
+            if (gBoard[iIter][jIter].isMine === true) {
                 renderCell({ i: iIter, j: jIter }, MINE)
             }
         }
