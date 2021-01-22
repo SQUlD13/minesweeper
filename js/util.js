@@ -5,8 +5,8 @@ console.log('--Util initializing--');
 
 function printMat(mat, selector) {//create InnerHTML at 'selector-'container for given mat
     let selectedDifficultyIdx = getSelectedDifficulty()
-    let hiddenStr = (selectedDifficultyIdx < 0) ? 'hidden' : ''
-    var strHTML = `<table class="minesweeper" border="0" oncontextmenu="return false"><tbody>`;
+    //let hiddenStr = (selectedDifficultyIdx < 0) ? 'hidden' : ''
+    var strHTML = `<table class="board" border="0" oncontextmenu="return false"><tbody>`;
     for (var i = 0; i < mat.length; i++) {
         strHTML += '<tr>';
         for (var j = 0; j < mat[0].length; j++) {
@@ -29,9 +29,9 @@ function printMat(mat, selector) {//create InnerHTML at 'selector-'container for
     }
     strHTML += '</tbody></table>';
     var elContainer = document.querySelector(selector);
+    renderLives('.minesweeper-lives')
+
     elContainer.innerHTML = strHTML;
-
-
 
 }
 
@@ -40,6 +40,28 @@ function renderCell(location, value) { //receives ({i:i,j:j}, innerHTML ) and se
     let elCell = document.getElementById(`${location.i}-${location.j}`)
     elCell.innerHTML = value;
     //console.log(gBoard, gLevel, gGame)
+}
+
+function creatLivesHTML() {
+    //let classStr = ``
+    //classStr += (gGame.isOn) ? `shown` :  `hidden`
+    //let strHtml = `<div class="${classStr}">`
+
+    let strHtml = '';
+    for (let i = 3; i > 0; i--) {
+        if (i <= gLives) {
+            strHtml += `<div class="lives life"> ${LIFE} </div>`
+        } else strHtml += `<div class="lives nolife"> ${NOLIFE} </div>`
+    }
+    //strHtml += `</div>`
+    return strHtml;
+}
+
+function renderLives(selector) {
+    let elLives = document.querySelector(`${selector}`);
+    elLives.innerHTML = creatLivesHTML();
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////Calculations & Formations

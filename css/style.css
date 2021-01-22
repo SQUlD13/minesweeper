@@ -13,9 +13,6 @@ body{
 
 
 
-.mo{
-    display: inline-block;
-}
 h1.difficulty{
     letter-spacing: 10px;
     transform: skew(5deg);
@@ -51,21 +48,16 @@ button.difficulty:hover{
 }
 
 
-.minesweeper{
-    margin:auto;
-}
-
-tbody { 
-    display:absolute;
-    margin:auto; 
+table.board{
+    margin:auto
 }
 
 table .cell{
     z-index: 1;
-    margin: auto;
     text-align: center;
     font-family: monospace;
     display: inline-block;
+    margin:auto;
     padding-top: 10px;
     font-size: 32px;
     box-shadow: 7px 11px 20px 5px var(--SHADOW_COLOR);
@@ -91,35 +83,46 @@ table .cell.shown{
     opacity: 80%;
 }
 
-.minesweeper-modal{
+
+
+.minesweeper-lives{
+    background-color: var(--MAIN_COLOR);
+    color: var(--BG_COLOR);
+    border-radius:15px;
+    min-width: 4em;
+    max-width: 8em;
+    font-size: 32px;
+    display:block;
     margin:auto;
     text-align: center;
 }
-
+.lives{
+    display:inline-block;
+    margin:auto;
+}
+.life{
+    color:red;
+}
 
 
 
 
 .hidden{
-
     opacity: 0;
     transition: opacity ease-in 1s ;
 }
 .shown{
-    /* animation-name: fadeIn;
-    animation-duration: 2s; */
-    /* visibility: visible; */
     display:block;
     opacity: 1;
     transition: opacity ease-in 1s;
 }
-.timer{
+.minesweeper-timer{
     z-index: -1;
     display:block;
     overflow: hidden;
-    width: 15vw;
     border-radius: 15px;
     box-shadow: 7px 11px 20px 15px var(--SHADOW_COLOR);
+    width:45vw;
     margin: auto;
     text-align: center;
     font-size: 10px;
@@ -127,6 +130,7 @@ table .cell.shown{
     background-color: var(--SECONDARY_COLOR);
     color: var(--BG_COLOR);
 }
+
 
 
 @keyframes fadeIn {
@@ -147,4 +151,7 @@ table .cell.shown{
     visibility: hidden;
     opacity: 0;
   }
+}
+@keyframes slideRight{
+
 }

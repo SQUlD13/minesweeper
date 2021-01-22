@@ -2,22 +2,25 @@
 
 
 const MINE = `💣`
-const EMPTY = '-'
+const EMPTY = ' '
 const MARKED = `🚩`
 const EXPLOSION = '💥'
+
 const LIFE = '❤'
+const NOLIFE = '♥'
 
 
 
 var gLevel = { SIZE: 4, MINES: 2 };
-var gBoard;
+var gLives = 3;
 var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0 };
+var gBoard;
+
 var gGameIntervalIdx;
 
 function init() {
-    renderDifficulties('.minesweeper-difficulty');
-
     console.log('--Initializing Minesweeper--')
+
     //gLevel.SIZE = DIFFICULTIES[gSelectedDifficulty].SIZE
     //gLevel.MINES = DIFFICULTIES[gSelectedDifficulty].MINES
     console.log('initial level is', gLevel);
@@ -27,27 +30,30 @@ function init() {
 
 
     gBoard = initializeBoard();
+    renderDifficulties('.minesweeper-difficulty');
     printMat(gBoard, `.minesweeper-board`)
     renderTimer('.minesweeper-timer')
     console.log('Initialized game state is', gGame.isOn)
 }
 
-function startGame(location) { //starts a game with a non-mine cell in the provided location
-    gGame.secsPassed = 1
-    gGame.isOn = true;
-    placeMines(location);
-    renderDifficulties('.minesweeper-difficulty');
-    renderTimer('.minesweeper-timer')//creates timer innerHTML
-    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('.minesweeper-timer') }, 1000)
-}
+function initializeBoard() {//Initial Model Generation -- based upon gLevel
+    let board = [];
+    let selectedDiffIdx = getSelectedDifficulty()
+    let diffIdx = (selectedDiffIdx >= 0) ? selectedDiffIdx : 0
 
-function placeMines(location) {
-    for (let i = 0; i < gLevel.MINES; i++) {
-        let empty = getRandomEmpty(gBoard, location);
-        gBoard[empty.i][empty.j].isMine = true;
-        renderCell({ i: empty.i, j: empty.j }, EMPTY);
-        setMinesNegsCount(gBoard)
+    //debugger
+    for (let i = 0; i < gDifficulties[diffIdx].SIZE; i++) {
+        board.push([])
+        for (let j = 0; j < gLevel.SIZE; j++) {
+            board[i][j] = {
+                isShown: false,
+                isMine: false,
+                isMarked: false,
+                minesAroundCount: 0
+            }
+        }
     }
+    return board;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////The Juicy part
@@ -79,17 +85,26 @@ function cellClicked(elCell, clickEvent) {
 
 
             if (!cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, render a colorful number inside of it, add a shown class
-            } else {///GAME LOST -- left clicked a bomb
-                gGame.isOn = false;
-                clearInterval(gGameIntervalIdx);
-                gGameIntervalIdx = null;
-                console.log('--GAME LOST--\n--CLICKED ON BOMB--')
-                //gGame.shownCount = 0;//MODEL
-                gBoard[i][j].isShown = true;
-                revealMines(i, j);
-                renderCell(clickLocation, EXPLOSION)
-                renderDifficulties('.minesweeper-difficulty');
-                renderTimer('.minesweeper-timer')
+            } else {
+                ///GAME LOST -- left clicked a bomb and no lives left
+                if (gLives === 1) {
+                    gLives = 0
+                    gGame.isOn = false;
+                    clearInterval(gGameIntervalIdx);
+                    gGameIntervalIdx = null;
+                    console.log('--GAME LOST--\n--CLICKED ON BOMB--')
+                    //gGame.shownCount = 0;//MODEL
+                    gBoard[i][j].isShown = true;
+                    revealMines(i, j);
+                    renderCell(clickLocation, EXPLOSION)
+                    renderDifficulties('.minesweeper-difficulty');
+                    renderTimer('.minesweeper-timer')
+                    renderLives('.minesweeper-lives')
+                } else {
+                    gLives--
+                    renderLives('.minesweeper-lives');
+                }
+
             }
             //elCell.classList.add('shown')
             //cell.isShown = true;
@@ -107,7 +122,7 @@ function cellClicked(elCell, clickEvent) {
                 renderCell(clickLocation, MARKED);
                 //renderModal('minesweeper', i, j);
                 console.log('--display cell information--')
-                checkGameOver();
+                checkGameOver()
             } else if (!cell.isShown) {
                 gGame.markedCount--;
                 cell.isMarked = false;//toggle cell marking
@@ -141,8 +156,6 @@ function cellClicked(elCell, clickEvent) {
     }
 
 }
-
-var neighboursWhoAreZero = []
 
 function showNeighbourCells(location) {
     //let cell = gBoard[location.i][location.j]
@@ -238,8 +251,8 @@ function countMinesAround(board, location) { //Neighbor loop
 function checkGameOver() {
     let amountToMark = ((gLevel.SIZE ** 2) - gLevel.MINES)
     //console.log('--ON GAME OVER CHECK--')
-    //console.log('There are', gLevel.MINES, 'mines on the board,', gGame.markedCount, 'cell are marked')
-    if ((gGame.markedCount === gLevel.MINES && (gGame.shownCount === amountToMark))) {//WIN CONDITION CHECK
+    console.log('There are', gLevel.MINES, 'mines on the board,', gGame.shownCount, 'cell are shown')
+    if ((gGame.shownCount === (gLevel.SIZE ** 2)) || (gGame.markedCount === gLevel.MINES && (gGame.shownCount === amountToMark))) {//WIN CONDITION CHECK
         console.log('Win condition met!')
         gGame.isOn = false
         renderDifficulties('.minesweeper-difficulty')
@@ -251,27 +264,29 @@ function checkGameOver() {
     }
 }
 
-function initializeBoard() {//Initial Model Generation -- based upon gLevel
-    let board = [];
-    let selectedDiffIdx = getSelectedDifficulty()
-    let diffIdx = (selectedDiffIdx >= 0) ? selectedDiffIdx : 0
+function startGame(location) { //starts a game with a non-mine cell in the provided location
+    gGame.secsPassed = 1
+    gLives = 3;
+    gGame.isOn = true;
+    placeMines(location);
+    //printMat(gBoard,'minesweeper')
+    renderDifficulties('.minesweeper-difficulty');
+    renderTimer('.minesweeper-timer')//creates timer innerHTML
+    renderLives(`.minesweeper-lives`)
 
-    //debugger
-    for (let i = 0; i < gDifficulties[diffIdx].SIZE; i++) {
-        board.push([])
-        for (let j = 0; j < gLevel.SIZE; j++) {
-            board[i][j] = {
-                isShown: false,
-                isMine: false,
-                isMarked: false,
-                minesAroundCount: 0
-            }
-        }
-    }
-    return board;
+    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('.minesweeper-timer') }, 1000)
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////rendering dom functions
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function placeMines(location) {
+    for (let i = 0; i < gLevel.MINES; i++) {
+        let empty = getRandomEmpty(gBoard, location);
+        gBoard[empty.i][empty.j].isMine = true;
+        renderCell({ i: empty.i, j: empty.j }, EMPTY);
+        setMinesNegsCount(gBoard)
+    }
+}
 
 function revealMines() {//DOM render on mines
     for (let iIter = 0; iIter < gBoard.length; iIter++) {
