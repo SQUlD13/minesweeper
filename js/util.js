@@ -8,6 +8,11 @@ function printMat(mat, selector) {//create InnerHTML at 'selector-'container for
     //let hiddenStr = (selectedDifficultyIdx < 0) ? 'hidden' : ''
     var strHTML = `<table class="board" border="0" oncontextmenu="return false"><tbody>`;
     for (var i = 0; i < mat.length; i++) {
+        // if (i = 0) {
+        //     strHTML += '<th>';
+        // } else {
+        //     strHTML += '<tr>';
+        // }
         strHTML += '<tr>';
         for (var j = 0; j < mat[0].length; j++) {
             var display = EMPTY;
@@ -23,7 +28,9 @@ function printMat(mat, selector) {//create InnerHTML at 'selector-'container for
             /////////////////////////////////////////////data properties - position
             let dataString = `id="${i}-${j}"`
             /////////////////////////////////////////////
+
             strHTML += `<td onclick="cellClicked(this,event)" oncontextmenu="cellClicked(this,event)" class="${className}" ${dataString}> <span>${display}</span></td>`
+
         }
         strHTML += '</tr>'
     }
@@ -44,12 +51,12 @@ function renderCell(location, value) { //receives ({i:i,j:j}, innerHTML ) and se
 
 function creatLivesHTML() {
     //let classStr = ``
-    //classStr += (gGame.isOn) ? `shown` :  `hidden`
-    //let strHtml = `<div class="${classStr}">`
+    //let shownStr = (gGame.isOn) ? `shown` : `hidden`
+    //let strHtml = `<div class="${shownStr}">`
 
     let strHtml = '';
     for (let i = 3; i > 0; i--) {
-        if (i <= gLives) {
+        if (i <= gGame.Lives) {
             strHtml += `<div class="lives life"> ${LIFE} </div>`
         } else strHtml += `<div class="lives nolife"> ${NOLIFE} </div>`
     }
@@ -61,7 +68,13 @@ function renderLives(selector) {
     let elLives = document.querySelector(`${selector}`);
     elLives.innerHTML = creatLivesHTML();
 
-
+    if (!gGame.isOn) {
+        elLives.classList.remove('shown')
+        elLives.classList.add('hidden')
+    } else {
+        elLives.classList.remove('hidden')
+        elLives.classList.add('shown')
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////Calculations & Formations

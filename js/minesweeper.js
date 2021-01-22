@@ -2,7 +2,7 @@
 
 
 const MINE = `💣`
-const EMPTY = ' '
+const EMPTY = '-'
 const MARKED = `🚩`
 const EXPLOSION = '💥'
 
@@ -12,8 +12,8 @@ const NOLIFE = '♥'
 
 
 var gLevel = { SIZE: 4, MINES: 2 };
-var gLives = 3;
-var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0 };
+//var gLives = 3;
+var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0, Lives: 3 };
 var gBoard;
 
 var gGameIntervalIdx;
@@ -79,33 +79,34 @@ function cellClicked(elCell, clickEvent) {
                     showNeighbourCells({ i: i, j: j })
                 }
 
+
+
+                if (cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, render a colorful number inside of it, add a shown class
+                    ///GAME LOST -- left clicked a bomb and no lives left
+                    if (gGame.Lives === 1) {
+                        gGame.Lives = 0
+                        gGame.isOn = false;
+                        clearInterval(gGameIntervalIdx);
+                        gGameIntervalIdx = null;
+                        console.log('--GAME LOST--\n--CLICKED ON BOMB--')
+                        //gGame.shownCount = 0;//MODEL
+                        gBoard[i][j].isShown = true;
+                        revealMines(i, j);
+                        renderCell(clickLocation, EXPLOSION)
+                        renderDifficulties('.minesweeper-difficulty');
+                        renderTimer('.minesweeper-timer')
+                        renderLives('.minesweeper-lives')
+                    } else {
+                        gGame.Lives--
+                        renderLives('.minesweeper-lives');
+                    }
+
+                }
                 //console.log('ON LMB CLICK -- there are ', gGame.shownCount, 'shown cells out of', ((gLevel.SIZE ** 2) - gLevel.MINES),
                 //    'cells to mark.\n there are', gLevel.MINES, 'mines on the board,', gGame.markedCount, 'of them are marked');
             }
 
 
-            if (!cell.isMine) {//////////////////////if clicked cell isn't marked, and is not a bomb, render a colorful number inside of it, add a shown class
-            } else {
-                ///GAME LOST -- left clicked a bomb and no lives left
-                if (gLives === 1) {
-                    gLives = 0
-                    gGame.isOn = false;
-                    clearInterval(gGameIntervalIdx);
-                    gGameIntervalIdx = null;
-                    console.log('--GAME LOST--\n--CLICKED ON BOMB--')
-                    //gGame.shownCount = 0;//MODEL
-                    gBoard[i][j].isShown = true;
-                    revealMines(i, j);
-                    renderCell(clickLocation, EXPLOSION)
-                    renderDifficulties('.minesweeper-difficulty');
-                    renderTimer('.minesweeper-timer')
-                    renderLives('.minesweeper-lives')
-                } else {
-                    gLives--
-                    renderLives('.minesweeper-lives');
-                }
-
-            }
             //elCell.classList.add('shown')
             //cell.isShown = true;
             //elCll.classList.add(`marked`);//DOM
@@ -123,6 +124,11 @@ function cellClicked(elCell, clickEvent) {
                 //renderModal('minesweeper', i, j);
                 console.log('--display cell information--')
                 checkGameOver()
+
+                if (cell.isMine) {
+                    gLevel.MINES--
+                }
+
             } else if (!cell.isShown) {
                 gGame.markedCount--;
                 cell.isMarked = false;//toggle cell marking
@@ -266,7 +272,7 @@ function checkGameOver() {
 
 function startGame(location) { //starts a game with a non-mine cell in the provided location
     gGame.secsPassed = 1
-    gLives = 3;
+    gGame.Lives = 3;
     gGame.isOn = true;
     placeMines(location);
     //printMat(gBoard,'minesweeper')
@@ -300,9 +306,9 @@ function revealMines() {//DOM render on mines
 }
 
 function renderTimer(selector) {
-    //let hiddenStr = (gGame.isOn) ? 'shown' : 'hidden'
+    let hiddenStr = (gGame.isOn) ? 'shown' : 'hidden'
     let elTimer = document.querySelector(`${selector}`)
-    let innerHtml = `<div  class="timer">\n <h1><span>${gGame.secsPassed}</span>\n<br> Seconds Passed </h1>`;
+    let innerHtml = `<div  class="timer ${hiddenStr}">\n <h1><span>${gGame.secsPassed}</span>\n<br> Seconds Passed </h1>`;
     // innerHtml += `<h2> Cells shown <br><span>${gGame.shownCount}<br></span></h2>`
     // innerHtml += `<h3>there are ${gLevel.MINES} mines on the board </h3></div>`
 

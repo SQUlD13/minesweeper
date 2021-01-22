@@ -27,7 +27,7 @@ function difficultyClicked(elDifficulty) {
         gGame.markedCount = 0
         gGame.shownCount = 0
         gGame.secsPassed = 0
-        gLives = 3
+        gGame.Lives = 3
 
         init()
     }
