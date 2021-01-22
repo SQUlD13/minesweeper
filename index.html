@@ -10,6 +10,15 @@
 
 
 <body onload="init()">
+
+    <div class="minesweeper-difficulty">
+
+        <!-- <h1>Please select a difficulty</h1> -->
+        <!-- <button class="difficulty ${classStr}" onclick="difficultyClicked(this)"> EASY <br>(3x3)</button>
+        <button onclick="difficultyClicked(this)">Medium</button>
+        <button onclick="difficultyClicked(this)">Expert</button> -->
+    </div>
+
     <div class="minesweeper-board">
         <!-- <table> ///Data structure
             <tbody>
@@ -30,9 +39,10 @@
                 </tr>
             </tbody>
         </table> -->
+
     </div>
     <div class="minesweeper-timer">
-        <h1><span>X:XX:XXX</span><br> Seconds Passed</h1>
+        <!-- <h1><span>X</span><br> Seconds Passed</h1> -->
     </div>
     <!-- <div hidden class="minesweeper-modal">
         <h1 onclick="init()">Restart game? </h1><br>
@@ -41,6 +51,7 @@
     </div>
 
     <script src="js/util.js"></script>
+    <script src="js/difficulty.js"></script>
     <script src="js/minesweeper.js"></script>
 </body>
 

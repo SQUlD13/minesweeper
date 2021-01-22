@@ -3,8 +3,10 @@ console.log('--Util initializing--');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////Matrix rendering
 
-function printMatrix(mat, selector) {//create InnerHTML at 'selector-'container for given mat
-    var strHTML = `<table border="0" oncontextmenu="return false"><tbody>`;
+function printMat(mat, selector) {//create InnerHTML at 'selector-'container for given mat
+    let selectedDifficultyIdx = getSelectedDifficulty()
+    let hiddenStr = (selectedDifficultyIdx < 0) ? 'hidden' : ''
+    var strHTML = `<table  border="0" oncontextmenu="return false"><tbody>`;
     for (var i = 0; i < mat.length; i++) {
         strHTML += '<tr>';
         for (var j = 0; j < mat[0].length; j++) {
@@ -14,6 +16,9 @@ function printMatrix(mat, selector) {//create InnerHTML at 'selector-'container 
             if (mat[i][j].isMarked) {
                 className += ` marked`;
                 display = MARKED;
+            } if (mat[i][j].isShown) {
+                className += ' shown'
+
             }
             /////////////////////////////////////////////data properties - position
             let dataString = `id="${i}-${j}"`
@@ -31,24 +36,26 @@ function renderCell(location, value) { //receives ({i:i,j:j}, innerHTML ) and se
     // Select the elCell and set the innerText value
     let elCell = document.getElementById(`${location.i}-${location.j}`)
     elCell.innerHTML = value;
+    //console.log(gBoard, gLevel, gGame)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////Calculations & Formations
-
-function getRandomEmpty(board) {//returns a random position in board based on entered bool, where the bool defines the empty
+//returns a random position in board based on entered bool, where the bool defines the empty
+//if provided with a location, doesn't return that location no matter what
+function getRandomEmpty(board, location) {
     let displayPositions = [];
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[0].length; j++) {
-            if (!board[i][j].isMine) {
+            if (!board[i][j].isMine && i !== location.i && j !== location.j) {
                 displayPositions.push({ i: i, j: j })
             };
         }
     }
 
     let rndIdx = getRandomInt(0, displayPositions.length);
-    let location = displayPositions.splice(rndIdx, 1)[0];
-    console.log('Finding random empty position', location)
-    return location;
+    let emptyLocation = displayPositions.splice(rndIdx, 1)[0];
+    console.log('Finding random empty position', emptyLocation)
+    return emptyLocation;
 }
 
 function getRandomRGB() {
