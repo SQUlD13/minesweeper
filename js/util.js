@@ -6,7 +6,7 @@ console.log('--Util initializing--');
 function printMat(mat, selector) {//create InnerHTML at 'selector-'container for given mat
     let selectedDifficultyIdx = getSelectedDifficulty()
     let hiddenStr = (selectedDifficultyIdx < 0) ? 'hidden' : ''
-    var strHTML = `<table  border="0" oncontextmenu="return false"><tbody>`;
+    var strHTML = `<table class="minesweeper" border="0" oncontextmenu="return false"><tbody>`;
     for (var i = 0; i < mat.length; i++) {
         strHTML += '<tr>';
         for (var j = 0; j < mat[0].length; j++) {
@@ -23,13 +23,16 @@ function printMat(mat, selector) {//create InnerHTML at 'selector-'container for
             /////////////////////////////////////////////data properties - position
             let dataString = `id="${i}-${j}"`
             /////////////////////////////////////////////
-            strHTML += `<td><button onclick="cellClicked(this,event)" oncontextmenu="cellClicked(this,event)" class="${className}" ${dataString}> <span>${display}</span> </button></td>`
+            strHTML += `<td onclick="cellClicked(this,event)" oncontextmenu="cellClicked(this,event)" class="${className}" ${dataString}> <span>${display}</span></td>`
         }
         strHTML += '</tr>'
     }
     strHTML += '</tbody></table>';
     var elContainer = document.querySelector(selector);
     elContainer.innerHTML = strHTML;
+
+
+
 }
 
 function renderCell(location, value) { //receives ({i:i,j:j}, innerHTML ) and sets the value on the DOM level

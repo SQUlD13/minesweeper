@@ -1,19 +1,17 @@
 :root{
         --BG_COLOR: #222;
+        --SHADOW_COLOR:#00000059;
         --MAIN_COLOR: rgba(230, 206, 247, 0.808);
         --SECONDARY_COLOR:rgba(240, 179, 155, 0.63);
 }
 
 body{
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: var(--BG_COLOR);
     color: var(--MAIN_COLOR);
 }
 
-.minesweeper-board table{
-    margin:auto;
-}
+
 
 .mo{
     display: inline-block;
@@ -25,7 +23,6 @@ h1.difficulty{
     text-align: center;
     background-color: var(--MAIN_COLOR);
     color:var(--BG_COLOR);
-    padding: 5px;
     transition: .2 ease-out;
 }
 
@@ -42,7 +39,7 @@ button.difficulty{
     color: var(--BG_COLOR);
     opacity: 50%;
     transition: .2s ease-out;
-    box-shadow: 7px 15px 12px 7px rgba(0, 0, 0, 0.479);
+    box-shadow: 7px 15px 12px 7px rgba(0, 0, 0, var(--SHADOW_COLOR) );
 }
 button.difficulty:hover{
     letter-spacing: 10px;
@@ -54,39 +51,44 @@ button.difficulty:hover{
 }
 
 
-/* .minesweeper{
-    height: 100vh;
-    width: 100vw;
-} */
+.minesweeper{
+    margin:auto;
+}
 
-table { 
+tbody { 
     display:absolute;
     margin:auto; 
-
 }
 
 table .cell{
+    z-index: 1;
+    margin: auto;
+    text-align: center;
     font-family: monospace;
     display: inline-block;
-    font-size: auto;
-    margin: auto;
-    box-shadow: 7px 11px 20px 5px #000000;
+    padding-top: 10px;
+    font-size: 32px;
+    box-shadow: 7px 11px 20px 5px var(--SHADOW_COLOR);
     border-radius: 5px;
     opacity: 50%;
-    height:45px;   
-    width: 45px;
+    min-width: 50px;
+    min-height: 50px;
     background-color: var(--MAIN_COLOR);
     color: var(--BG_COLOR);
     transition: .2s ease-out;
 }
-.cell:hover{
+table .cell:hover{
     opacity: 75%;
     transform: scale(1.2);
     transition: .2s ease-in;
 }
-.cell.marked{
+table .cell.marked{
     background-color: var(--SECONDARY_COLOR);
     opacity: 45%;
+}
+table .cell.shown{
+    background-color: white; 
+    opacity: 80%;
 }
 
 .minesweeper-modal{
@@ -94,43 +96,38 @@ table .cell{
     text-align: center;
 }
 
-.cell.shown{
-    background-color: white; 
-    opacity: 80%;
-}
 
- 
 
-.timer.hidden{
- visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s linear 5s, opacity 5s;
+
+
+.hidden{
+
+    opacity: 0;
+    transition: opacity ease-in 1s ;
 }
-.timer.shown{
+.shown{
     /* animation-name: fadeIn;
     animation-duration: 2s; */
-     visibility: visible;
-  opacity: 1;
-  transition: visibility 0s linear 0s, opacity 5s;
+    /* visibility: visible; */
+    display:block;
+    opacity: 1;
+    transition: opacity ease-in 1s;
 }
-
 .timer{
-
-
-    
-    width: 30vw;
+    z-index: -1;
+    display:block;
+    overflow: hidden;
+    width: 15vw;
     border-radius: 15px;
-    box-shadow: 7px 11px 20px 15px #00000059;
+    box-shadow: 7px 11px 20px 15px var(--SHADOW_COLOR);
     margin: auto;
     text-align: center;
     font-size: 10px;
+    opacity: 55%;
     background-color: var(--SECONDARY_COLOR);
-    opacity: 35%;
     color: var(--BG_COLOR);
 }
-.timer:hover{
-    opacity: 75%;
-}
+
 
 @keyframes fadeIn {
   0% {
@@ -139,5 +136,15 @@ table .cell{
   100% {
     visibility: visible;
     opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
   }
 }

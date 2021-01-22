@@ -89,6 +89,7 @@ function cellClicked(elCell, clickEvent) {
                 revealMines(i, j);
                 renderCell(clickLocation, EXPLOSION)
                 renderDifficulties('.minesweeper-difficulty');
+                renderTimer('.minesweeper-timer')
             }
             //elCell.classList.add('shown')
             //cell.isShown = true;
@@ -284,12 +285,19 @@ function revealMines() {//DOM render on mines
 }
 
 function renderTimer(selector) {
-    let hiddenStr = (gGame.isOn) ? 'shown' : 'hidden'
+    //let hiddenStr = (gGame.isOn) ? 'shown' : 'hidden'
     let elTimer = document.querySelector(`${selector}`)
-    let innerHtml = `<div  class="timer ${hiddenStr}">\n <h1><span>${gGame.secsPassed}</span>\n<br> Seconds Passed </h1>`;
+    let innerHtml = `<div  class="timer">\n <h1><span>${gGame.secsPassed}</span>\n<br> Seconds Passed </h1>`;
     // innerHtml += `<h2> Cells shown <br><span>${gGame.shownCount}<br></span></h2>`
     // innerHtml += `<h3>there are ${gLevel.MINES} mines on the board </h3></div>`
 
+    if (!gGame.isOn) {
+        elTimer.classList.remove('shown')
+        elTimer.classList.add('hidden')
+    } else {
+        elTimer.classList.remove('hidden')
+        elTimer.classList.add('shown')
+    }
     elTimer.innerHTML = innerHtml;
 }
 

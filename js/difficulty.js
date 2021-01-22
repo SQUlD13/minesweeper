@@ -35,19 +35,24 @@ function difficultyClicked(elDifficulty) {
 
 function renderDifficulties(selector) {
     console.log('--Initializing difficulties division')
-    let selectedDiffIdx = getSelectedDifficulty(gDifficulties)
-
+    //let selectedDiffIdx = getSelectedDifficulty(gDifficulties)
 
     let elDifficulty = document.querySelector(`${selector}`)
 
     //let strHtml = `<h1 class="difficulty"> Please select a difficulty </h1>`
-    let strHtml = ``;
     //console.log('rendering html string for button', gDifficulties[selectedDiffIdx], 'game is', gGame.isOn)
-    strHtml += renderButtonBlockHTML()
+    let strHtml = renderButtonBlockHTML()
 
     //console.log('returned html is\n', strHtml)
-    strHtml += ` </div>\n`
     elDifficulty.innerHTML = strHtml;
+
+    if (gGame.isOn) {
+        elDifficulty.classList.remove('shown')
+        elDifficulty.classList.add('hidden')
+    } else {
+        elDifficulty.classList.remove('hidden')
+        elDifficulty.classList.add('shown')
+    }
 
 }
 
