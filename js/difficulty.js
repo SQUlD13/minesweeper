@@ -29,10 +29,6 @@ function difficultyClicked(elDifficulty) {
         gGame.secsPassed = 0
 
         init()
-        //console.log('gDifficulties is', gDifficulties)
-        // renderDifficulties('.minesweeper-difficulty');
-        // initializeBoard()
-        // printMat(gBoard, '.minesweeper-board')
     }
 
 }

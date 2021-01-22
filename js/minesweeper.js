@@ -1,10 +1,10 @@
 'use strict'
 
 
-const MINE = `*`
+const MINE = `💣`
 const EMPTY = '-'
 const MARKED = `🚩`
-const EXPLOSION = 'X'
+const EXPLOSION = '💥'
 const LIFE = '❤'
 
 
@@ -28,7 +28,7 @@ function init() {
 
     gBoard = initializeBoard();
     printMat(gBoard, `.minesweeper-board`)
-    renderTimer('minesweeper')
+    renderTimer('.minesweeper-timer')
     console.log('Initialized game state is', gGame.isOn)
 }
 
@@ -37,8 +37,8 @@ function startGame(location) { //starts a game with a non-mine cell in the provi
     gGame.isOn = true;
     placeMines(location);
     renderDifficulties('.minesweeper-difficulty');
-    renderTimer('minesweeper')//creates timer innerHTML
-    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('minesweeper') }, 1000)
+    renderTimer('.minesweeper-timer')//creates timer innerHTML
+    gGameIntervalIdx = setInterval(function () { gGame.secsPassed++; renderTimer('.minesweeper-timer') }, 1000)
 }
 
 function placeMines(location) {
@@ -70,12 +70,7 @@ function cellClicked(elCell, clickEvent) {
 
                 showCell(clickLocation)
                 if (cell.minesAroundCount === 0 && !cell.isMine) {
-
-                    let zeroedNeighbours = findZeroedNeighbours(clickLocation)
-                    console.log('zeroed neighbours are', zeroedNeighbours, 'for cell', clickLocation)
                     showNeighbourCells({ i: i, j: j })
-
-
                 }
 
                 //console.log('ON LMB CLICK -- there are ', gGame.shownCount, 'shown cells out of', ((gLevel.SIZE ** 2) - gLevel.MINES),
@@ -99,7 +94,6 @@ function cellClicked(elCell, clickEvent) {
             //cell.isShown = true;
             //elCll.classList.add(`marked`);//DOM
         }
-
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -147,34 +141,11 @@ function cellClicked(elCell, clickEvent) {
 
 }
 
-
-
-function findZeroedNeighbours(location) {// a neighbour loop to find empty locations near the provided cell location
-    let neighboursWhoAreZero = []
-    //debugger
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            let nextCellLocation = { i: location.i + i, j: location.j + j }
-
-            if (nextCellLocation.i >= 0 && nextCellLocation.i <= gLevel.SIZE - 1 && nextCellLocation.j >= 0 && nextCellLocation.j <= gLevel.SIZE - 1) {
-
-                let nextCell = gBoard[nextCellLocation.i][nextCellLocation.j]
-                if (nextCell.minesAroundCount === 0) {
-                    console.log('returning cell', nextCellLocation)
-                    return neighboursWhoAreZero.push(nextCellLocation);
-                } else return findZeroedNeighbours(nextCellLocation)
-            }
-        }
-    }
-    return neighboursWhoAreZero;
-}
+var neighboursWhoAreZero = []
 
 function showNeighbourCells(location) {
+    //let cell = gBoard[location.i][location.j]
 
-    let cell = gBoard[location.i][location.j]
-    //let elCell = document.getElementById(`${location.i}-${location.j}`)
-    //console.log('on cell', cell, 'location is', location);
-    //debugger
     for (let i = -1; i <= 1; i++) {
         for (let j = -1; j <= 1; j++) {
             if (i === 0 && j === 0) continue;
@@ -187,7 +158,13 @@ function showNeighbourCells(location) {
             if (nextCellJ >= 0 && nextCellJ <= gLevel.SIZE - 1 && nextCellI >= 0 && nextCellI <= gLevel.SIZE - 1) {//if next cell is on board
                 let nextCell = gBoard[nextCellI][nextCellJ]
 
-                showCell({ i: nextCellI, j: nextCellJ })
+                if (!nextCell.isMine && nextCell.minesAroundCount === 0 && !nextCell.isShown) {
+                    showCell({ i: nextCellI, j: nextCellJ })
+                    showNeighbourCells({ i: nextCellI, j: nextCellJ })
+                } else {
+                    showCell({ i: nextCellI, j: nextCellJ })
+                }
+
             }
         }
     }
@@ -259,8 +236,8 @@ function countMinesAround(board, location) { //Neighbor loop
 
 function checkGameOver() {
     let amountToMark = ((gLevel.SIZE ** 2) - gLevel.MINES)
-    console.log('--ON GAME OVER CHECK--')
-    console.log('There are', gLevel.MINES, 'mines on the board,', gGame.markedCount, 'cell are marked')
+    //console.log('--ON GAME OVER CHECK--')
+    //console.log('There are', gLevel.MINES, 'mines on the board,', gGame.markedCount, 'cell are marked')
     if ((gGame.markedCount === gLevel.MINES && (gGame.shownCount === amountToMark))) {//WIN CONDITION CHECK
         console.log('Win condition met!')
         gGame.isOn = false
@@ -307,9 +284,12 @@ function revealMines() {//DOM render on mines
 }
 
 function renderTimer(selector) {
-    let hiddenStr = (gGame.isOn) ? '' : 'hidden'
-    let elTimer = document.querySelector(`.${selector}-timer`)
-    let innerHtml = `<div ${hiddenStr} class="timer">\n <h1><span>${gGame.secsPassed}</span>\n<br> Seconds Passed \n</h1>\n<h2> Cells shown <br><span>${gGame.shownCount}<br></span></h2> <h3>there are ${gLevel.MINES} mines on the board </div>`;
+    let hiddenStr = (gGame.isOn) ? 'shown' : 'hidden'
+    let elTimer = document.querySelector(`${selector}`)
+    let innerHtml = `<div  class="timer ${hiddenStr}">\n <h1><span>${gGame.secsPassed}</span>\n<br> Seconds Passed </h1>`;
+    // innerHtml += `<h2> Cells shown <br><span>${gGame.shownCount}<br></span></h2>`
+    // innerHtml += `<h3>there are ${gLevel.MINES} mines on the board </h3></div>`
+
     elTimer.innerHTML = innerHtml;
 }
 
