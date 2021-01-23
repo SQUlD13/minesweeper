@@ -61,9 +61,6 @@ table.board{
 }
 
 
-tr{
-    /* display: table-row; */
-}
 table .cell{
     z-index: 1;
     text-align: center;
@@ -126,13 +123,16 @@ table .cell.shown{
 
 .hidden{
     opacity: 0;
+    visibility: hidden;
     transition: opacity ease-in 1s ;
 }
 .shown{
     /* display:block; */
     opacity: 1;
+    visibility:visible;
     transition: opacity ease-in 1s;
 }
+
 .minesweeper-timer{
     z-index: -1;
     display:block;

@@ -56,7 +56,7 @@ function creatLivesHTML() {
 
     let strHtml = '';
     for (let i = 3; i > 0; i--) {
-        if (i <= gGame.Lives) {
+        if (i <= gGame.lives) {
             strHtml += `<div class="lives life"> ${LIFE} </div>`
         } else strHtml += `<div class="lives nolife"> ${NOLIFE} </div>`
     }

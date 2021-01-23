@@ -21,14 +21,7 @@ function difficultyClicked(elDifficulty) {
         gDifficulties[clickedDifficultyId].SELECTED = true;
         //console.log('Difficulty button clicked, gLevel set to', gLevel, 'according to gDifficulties', gDifficulties)
 
-        clearInterval(gGameIntervalIdx)
-        gGameIntervalIdx = null;
-        gGame.isOn = false;
-        gGame.markedCount = 0
-        gGame.shownCount = 0
-        gGame.secsPassed = 0
-        gGame.Lives = 3
-
+        initializeGame()
         init()
     }
 
