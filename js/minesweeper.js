@@ -17,7 +17,7 @@ const DIFFICULTYaud = new Audio("audio/difficulty.wav")
 
 
 var gLevel = { SIZE: 4, MINES: 2 };
-var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0, lives: 3, clickedMines: 0 };
+var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0, lives: 0, clickedMines: 0 };
 var gBoard;
 
 var gGameIntervalIdx;

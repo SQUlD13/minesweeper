@@ -4,7 +4,6 @@ console.log('--Util initializing--');
 ///////////////////////////////////////////////////////////////////////////////////////////////////Matrix rendering
 
 function printMat(mat, selector) {//create InnerHTML at 'selector-'container for given mat
-    let selectedDifficultyIdx = getSelectedDifficulty()
     //let hiddenStr = (selectedDifficultyIdx < 0) ? 'hidden' : ''
     var strHTML = `<table class="board" border="0" oncontextmenu="return false"><tbody>`;
     for (var i = 0; i < mat.length; i++) {
