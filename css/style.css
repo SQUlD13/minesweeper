@@ -124,7 +124,7 @@ table .cell.shown{
 .hidden{
     opacity: 0;
     visibility: hidden;
-    transition: opacity ease-in 1s ;
+    transition: all ease-in 1s ;
 }
 .shown{
     /* display:block; */
