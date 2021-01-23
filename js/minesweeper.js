@@ -117,8 +117,6 @@ function cellClicked(elCell, clickEvent) {
 }
 
 function showNeighbourCells(location) {
-    //let cell = gBoard[location.i][location.j]
-
     for (let i = -1; i <= 1; i++) {
         for (let j = -1; j <= 1; j++) {
             if (i === 0 && j === 0) continue;
@@ -131,12 +129,15 @@ function showNeighbourCells(location) {
             if (nextCellJ >= 0 && nextCellJ <= gLevel.SIZE - 1 && nextCellI >= 0 && nextCellI <= gLevel.SIZE - 1) {//if next cell is on board
                 let nextCell = gBoard[nextCellI][nextCellJ]
 
-                if (!nextCell.isMine && nextCell.minesAroundCount === 0 && !nextCell.isShown && !nextCell.isMarked) {
-                    showCell({ i: nextCellI, j: nextCellJ })
-                    showNeighbourCells({ i: nextCellI, j: nextCellJ })
-                } else {
-                    showCell({ i: nextCellI, j: nextCellJ })
+                if (!nextCell.isShown && !nextCell.isMarked) {
+                    if (!nextCell.isMine && nextCell.minesAroundCount === 0) {
+                        showCell({ i: nextCellI, j: nextCellJ })
+                        showNeighbourCells({ i: nextCellI, j: nextCellJ })
+                    } else {
+                        showCell({ i: nextCellI, j: nextCellJ })
+                    }
                 }
+
 
             }
         }
