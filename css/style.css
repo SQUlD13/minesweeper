@@ -47,32 +47,29 @@ button.difficulty:hover{
     box-shadow: 7px 11px 2px 2px rgba(255, 255, 255, 0.459);
 }
 
+
+
+
+
 table{
-    margin: auto;
-    /* display: table;
-    table-layout: fixed; */
+    display:flexbox;
 }
 
 table.board{
-    /* display: block; */
     min-width: 60vh;
     min-height: 60vh;
     margin:auto;
 }
-
-
 table .cell{
     z-index: 1;
     text-align: center;
     font-family: monospace;
-    display:inline-flexbox;
+    display: flexbox;
     text-align: center;    
-    /* margin:auto; */
-    /* padding-top: 10px; */
-    font-size: 12px;
-    min-width: 25px;
-    /* min-height: 25px; */
-    
+    font-size: 24px;
+    max-height: 24px;
+    min-width: 24px; 
+
     box-shadow: 7px 11px 20px 5px var(--SHADOW_COLOR);
     border-radius: 5px;
     opacity: 80%;
@@ -104,7 +101,7 @@ table .cell.shown{
     min-width: 4em;
     max-width: 8em;
     font-size: 32px;
-    display:block;
+    display:flex;
     margin:auto;
     text-align: center;
     box-shadow: 7px 11px 20px 5px var(--SHADOW_COLOR);

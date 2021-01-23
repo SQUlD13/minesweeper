@@ -20,7 +20,7 @@ function difficultyClicked(elDifficulty) {
         gDifficulties[currDifficultyId].SELECTED = false;
         gDifficulties[clickedDifficultyId].SELECTED = true;
         //console.log('Difficulty button clicked, gLevel set to', gLevel, 'according to gDifficulties', gDifficulties)
-
+        DIFFICULTYaud.cloneNode(true).play()
         initializeGame()
         init()
     }

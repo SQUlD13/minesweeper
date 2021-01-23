@@ -2,7 +2,7 @@
 
 
 const MINE = `💣`
-const EMPTY = '-'
+const EMPTY = ' '
 const MARKED = `🚩`
 const EXPLOSION = '💥'
 
@@ -11,8 +11,12 @@ const NOLIFE = '♥'
 const LIVES = 3;
 
 
+const SHOWaud = new Audio("audio/pop.flac")
+const MARKaud = new Audio("audio/boop.wav")
+const DIFFICULTYaud = new Audio("audio/difficulty.wav")
+
+
 var gLevel = { SIZE: 4, MINES: 2 };
-//var gLives = 3;
 var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0, lives: 3, clickedMines: 0 };
 var gBoard;
 
@@ -60,16 +64,12 @@ function initializeGame() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////The Juicy part
 
 function cellClicked(elCell, clickEvent) {
-    let id = elCell.getAttribute('id')
+    let clickLocation = getCellLocationById(elCell)
 
-    let i = parseInt(id.substring(0, 1))
-    let j = parseInt(id.substring(2))
-    let clickLocation = { i: i, j: j }
-
-    let cell = gBoard[i][j];
+    let cell = gBoard[clickLocation.i][clickLocation.j];
 
     //console.log('ON LMB CLICK -- there are ', gGame.shownCount, 'shown cells out of', ((gLevel.SIZE ** 2) - gLevel.MINES),
-    //    'cells to mark.\n there are', gLevel.MINES, 'mines on the board,', gGame.markedCount, 'of them are marked');
+    //'cells to mark.\n there are', gLevel.MINES, 'mines on the board,', gGame.markedCount, 'of them are marked');
 
     if (gGame.isOn) {
 
@@ -78,35 +78,38 @@ function cellClicked(elCell, clickEvent) {
                 if (cell.isMine) {///GAME LOST STATE -- left clicked a bomb
                     checkGameLose(clickLocation)
                 } else if (cell.minesAroundCount === 0) {
-                    showNeighbourCells({ i: i, j: j })
+                    showNeighbourCells(clickLocation)
                 }
                 showCell(clickLocation)
             }
+            SHOWaud.cloneNode(true).play()
         }
 
         else if (clickEvent.button === 2) {//if right-clicking
             markCell(clickLocation)
-
         }
     } else if (gGame.markedCount === 0 && gGame.shownCount === 0) {//if first click
         startGame(clickLocation)
         if (clickEvent.button === 0) {
 
             if (cell.minesAroundCount === 0 && !cell.isMine) {
-                showNeighbourCells({ i: i, j: j })
-                showCell({ i: i, j: j })
+                showNeighbourCells(clickLocation)
+                showCell(clickLocation)
+                SHOWaud.play()
 
             } else if (!cell.isMine) {
                 //renderCell({ i: i, j: j }, `<span style="color:${getRandomRGB()}; margin:auto; "> ${cell.minesAroundCount}</span>`)//rendering a colorful number
-                showCell({ i: i, j: j })
-
+                showCell(clickLocation)
+                SHOWaud.play()
             }
 
         } else if (clickEvent.button === 2) {
             cell.isMarked = true
             gGame.markedCount++;
             elCell.classList.add('marked')
-            renderCell({ i: i, j: j }, MARKED);
+            renderCell(clickLocation, MARKED);
+            MARKaud.play()
+
         }
 
     }
@@ -141,6 +144,8 @@ function showNeighbourCells(location) {
 }
 
 function showCell(location) {
+
+
     let cell = gBoard[location.i][location.j]
     if (!cell.isShown) {
         if (!cell.isMine) {
@@ -152,8 +157,9 @@ function showCell(location) {
         renderShownCell(location)
 
         checkGameWin()
-
     }
+
+
     //console.log('there are', gGame.shownCount, 'cells when showing a cell\n', cell)
 }
 
@@ -161,8 +167,13 @@ function renderShownCell(location) {
     let cell = gBoard[location.i][location.j]
     let strHtml = ''
     if (cell.minesAroundCount >= 0 && !cell.isMine) {
-        //strHtml = `<span style="color:${getRandomRGB()}; margin:auto; "> ${cell.minesAroundCount}</span>`//rendering a colorful number
-        strHtml = `${cell.minesAroundCount}`
+        strHtml = `<span style="color:${getRandomRGB()}; margin:auto; "> ${cell.minesAroundCount}</span>`//rendering a colorful number
+        //strHtml = `${cell.minesAroundCount}`
+    } else if (!cell.isMine) {
+        strHtml = 0
+    }
+    else if (cell.isMine) {
+        strHtml = MINE
     } else { strHtml = EXPLOSION }
     //else if (!cell.isMine) {
     //     strHtml = EMPTY
@@ -173,21 +184,22 @@ function renderShownCell(location) {
 
 function markCell(location) {
     //console.log('right mouse button clicked on element', elCell, '\n amont of marked cell', gGame.markedCount)
+    let elCell = document.getElementById(`${location.i}-${location.j}`)
     let cell = gBoard[location.i][location.j]
     if (!cell.isMarked && !cell.isShown) {
         gGame.markedCount++;
         cell.isMarked = true;
         elCell.classList.add(`marked`);
-        renderCell(clickLocation, MARKED);
+        renderCell(location, MARKED);
         checkGameWin()
-
     } else if (!cell.isShown) {
         gGame.markedCount--;
         cell.isMarked = false;
         elCell.classList.remove(`marked`);
         elCell.classList.remove('shown')
-        renderCell(clickLocation, EMPTY);
+        renderCell(location, EMPTY);
     }
+    MARKaud.cloneNode(true).play()
 }
 
 
@@ -227,9 +239,8 @@ function checkGameWin() {
     let amountToMark = (gLevel.MINES - (gGame.clickedMines))
     let allAreShown = (gGame.shownCount === (gLevel.SIZE ** 2))
     //console.log('--ON GAME OVER CHECK--')
-    console.log('There are', gLevel.MINES, 'mines on the board,', gGame.shownCount, 'cell are shown')
+    //console.log('There are', gLevel.MINES, 'mines on the board,', gGame.shownCount, 'cell are shown')
     if (allAreShown || (gGame.markedCount === amountToMark && gGame.shownCount === amountToShow)) {//WIN CONDITION CHECK
-        console.log('Win condition met!')
         gGame.isOn = false
         clearInterval(gGameIntervalIdx);
         gGameIntervalIdx = null;
@@ -249,8 +260,6 @@ function checkGameLose(location) {
         gGame.isOn = false;
         clearInterval(gGameIntervalIdx);
         gGameIntervalIdx = null;
-        console.log('--GAME LOST--\n--CLICKED ON BOMB--')
-        gGame.shownCount = 0;//MODEL
         revealMines();
         renderCell(location, EXPLOSION)
         renderDifficulties('.minesweeper-difficulty');

@@ -46,14 +46,9 @@ function renderCell(location, value) { //receives ({i:i,j:j}, innerHTML ) and se
     // Select the elCell and set the innerText value
     let elCell = document.getElementById(`${location.i}-${location.j}`)
     elCell.innerHTML = value;
-    //console.log(gBoard, gLevel, gGame)
 }
 
 function creatLivesHTML() {
-    //let classStr = ``
-    //let shownStr = (gGame.isOn) ? `shown` : `hidden`
-    //let strHtml = `<div class="${shownStr}">`
-
     let strHtml = '';
     for (let i = 3; i > 0; i--) {
         if (i <= gGame.lives) {
@@ -75,6 +70,14 @@ function renderLives(selector) {
         elLives.classList.remove('hidden')
         elLives.classList.add('shown')
     }
+}
+
+function getCellLocationById(cellElement) {
+    let id = cellElement.getAttribute('id')
+
+    let i = parseInt(id.substring(0, 1))
+    let j = parseInt(id.substring(2))
+    return { i: i, j: j }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////Calculations & Formations
